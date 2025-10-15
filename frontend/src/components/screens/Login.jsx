@@ -87,11 +87,11 @@ const SignIn = () => {
     };
 
     const handleGoogleSignIn = async () => {
-        window.location.href = "http://localhost:5000/auth/google";
+        window.location.href = "http://13.203.92.53:5000/auth/google";
     };
 
     const handleGitHubSignIn = () => {
-        window.location.href = "http://localhost:5000/auth/github";
+        window.location.href = "http://13.203.92.53:5000/auth/github";
     };
 
     return (

@@ -7,7 +7,7 @@ import User from "../models/User.js";
 import axios from "axios";
 
 // Use environment variable for backend callback base URL
-const BACKEND_URL =  "http://localhost:5000";
+const BACKEND_URL = "http://13.203.92.53:5000";
 
 passport.use(
     new GoogleStrategy(
