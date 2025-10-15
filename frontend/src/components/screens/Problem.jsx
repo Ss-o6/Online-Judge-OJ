@@ -24,6 +24,7 @@ import TaskAltIcon from '@mui/icons-material/TaskAlt';
 import Box from "@mui/material/Box";
 
 const Problem = () => {
+    
     const { id } = useParams();
     const navigate = useNavigate();
     const [problem, setProblem] = useState(null);
@@ -404,8 +405,6 @@ const Problem = () => {
     );
 };
 
-
-
 const CodeEditorComponent = ({ problem }) => {
     const [code, setCode] = useState('');
     const [language, setLanguage] = useState("cpp");
@@ -416,13 +415,6 @@ const CodeEditorComponent = ({ problem }) => {
     const [error, setError] = useState(null);
 
     const defaultCodes = {
-        c: `#include <stdio.h>
-
-int main() {
-    printf("Hello, World!\\n");
-    return 0;
-}
-`,
         javascript: `console.log('Hello, World!');`,
         java: `public class Main {
     public static void main(String[] args) {
@@ -447,61 +439,83 @@ int main() {
         setLanguage(event.target.value);
     };
 
-    const handleRun = async () => {
-        try {
-            setRunning(true);
-            const token = localStorage.getItem("token");
-            const response = await api.post("/run", {
-                code,
-                input,
-                language,
-            }, {
-                headers: { Authorization: `Bearer ${token}` },
-            });
+   const handleRun = async () => {
+    try {
+        setRunning(true);
+        const token = localStorage.getItem("token");
 
-            if (response.data.success) {
-                setOutput(response.data.result);
-            } else {
-                setOutput(`Result: ${response.data.result}\n${response.data.message}`);
-            }
-            setError(null);
-            setVerdict(null);
-        } catch (error) {
-            console.error("Failed to run code:", error);
-            setError("Failed to run code. Please try again.");
-            setOutput("");
-            setVerdict(null);
-        } finally {
-            setRunning(false);
+        const response = await api.post("/run", {
+            code,
+            input,
+            language,
+        }, {
+            headers: { Authorization: `Bearer ${token}` },
+        });
+
+        if (response.data.success) {
+            // Program ran successfully
+            setOutput(response.data.result);   // show output only here
+            setVerdict(null);                 // no verdict for success
+        } else {
+            // Error occurred (compilation/runtime)
+            setVerdict({
+                type: "error",
+                messages: response.data.message || response.data.result,
+            });
+            setOutput("");  // clear output box
         }
-    };
+
+        setError(null);
+    } catch (err) {
+        console.error("Failed to run code:", err);
+        setVerdict({
+            type: "error",
+            messages: "Failed to run code. Please try again.",
+        });
+        setOutput(""); // clear output on network/error
+    } finally {
+        setRunning(false);
+    }
+};
+
 
     const handleSubmit = async () => {
-        try {
-            setRunning(true);
-            const token = localStorage.getItem("token");
-            const response = await api.post(`/submit/${problem._id}`, {
-                code,
-                language,
-                problem,
-            }, {
-                headers: { Authorization: `Bearer ${token}` },
+    try {
+        setRunning(true);
+        const token = localStorage.getItem("token");
+
+        const response = await api.post(`/submit/${problem._id}`, {
+            code,
+            language,
+            problem,
+        }, {
+            headers: { Authorization: `Bearer ${token}` },
+        });
+
+        if (response.data.success) {
+            // All test cases passed
+            const passedMessage = problem.testCases.map((tc, index) => `Test case ${index + 1} passed`).join("\n");
+            setVerdict({ type: "success", messages: passedMessage });
+        } else {
+            // Some test case failed or compilation/runtime error
+            setVerdict({
+                type: "error",
+                messages: response.data.message || response.data.result,
             });
-            if (response.data.success) {
-                setVerdict(response.data.result);
-            } else {
-                setVerdict(`Result: ${response.data.result}\n${response.data.message}`);
-            }
-            setError(null);
-            setOutput("");
-        } catch (error) {
-            console.error("Failed to submit code:", error);
-            setError("Failed to submit code. Please try again.");
-            setOutput("");
-        } finally {
-            setRunning(false);
         }
-    };
+
+        setError(null);
+        setOutput("");
+    } catch (err) {
+        console.error("Failed to submit code:", err);
+        setVerdict(null);
+        setError("Failed to submit code. Please try again.");
+        setOutput("");
+    } finally {
+        setRunning(false);
+    }
+};
+
 
     return (
         <Container maxWidth="md" className="my-4">
@@ -515,10 +529,9 @@ int main() {
                         onChange={handleLanguageChange}
                         label="Language"
                     >
-                        <MenuItem value="c">C</MenuItem>
-                        <MenuItem value="cpp">C++</MenuItem>
-                        <MenuItem value="java">Java</MenuItem>
                         <MenuItem value="javascript">JavaScript</MenuItem>
+                        <MenuItem value="java">Java</MenuItem>
+                        <MenuItem value="cpp">C++</MenuItem>
                         <MenuItem value="python">Python</MenuItem>
                     </Select>
                 </FormControl>
@@ -557,61 +570,83 @@ int main() {
                         readOnly
                     />
                 </Grid>
-                {verdict && (
-                    <Grid item xs={12}>
-                        <TextField
-                            label="Verdict"
-                            multiline
-                            rows={4}
-                            variant="outlined"
-                            fullWidth
-                            value={verdict}
-                            readOnly
-                            style={{ marginTop: 20 }}
-                        />
-                    </Grid>
-                )}
-                {error && (
-                    <Grid item xs={12}>
-                        <TextField
-                            label="Error"
-                            multiline
-                            rows={4}
-                            variant="outlined"
-                            fullWidth
-                            value={error}
-                            readOnly
-                            style={{ marginTop: 20, borderColor: "#d32f2f", borderWidth: 2 }}
-                        />
-                    </Grid>
-                )}
+               {verdict && (
+    <Grid item xs={12}>
+        <Box
+            sx={{
+                p: 2,
+                borderRadius: 2,
+                backgroundColor: verdict.type === "success" ? "#d4edda" : "#f8d7da",
+                color: verdict.type === "success" ? "#155724" : "#721c24",
+                fontFamily: "monospace",
+                whiteSpace: "pre-line",
+            }}
+        >
+            {verdict.messages}
+        </Box>
+    </Grid>
+)}
+
+{error && (
+    <Grid item xs={12}>
+        <Box
+            sx={{
+                p: 2,
+                borderRadius: 2,
+                backgroundColor: "#f8d7da",
+                color: "#721c24",
+                fontFamily: "monospace",
+                whiteSpace: "pre-line",
+            }}
+        >
+            {error}
+        </Box>
+    </Grid>
+)}
+
             </Grid>
             <div className="flex justify-center mt-4">
-                <Button
-                    variant="contained"
-                    color="primary"
-                    onClick={handleRun}
-                    style={{
-                        marginRight: 10,
-                        backgroundColor: "#4f4f4f",
-                        color: "#fff",
-                    }}
-                    disabled={running}
-                >
-                    Run
-                </Button>
-                <Button
-                    variant="contained"
-                    color="secondary"
-                    onClick={handleSubmit}
-                    style={{ backgroundColor: "#d32f2f", color: "#fff" }}
-                    disabled={running}
-                >
-                    Submit
-                </Button>
+               <Button
+    variant="contained"
+    color="primary"
+    onClick={handleRun}
+    style={{
+        marginRight: 10,
+        backgroundColor: "#4f4f4f",
+        color: "#fff",
+        position: "relative", // for loader
+    }}
+    disabled={running}
+>
+    {running ? (
+        <CircularProgress size={24} color="inherit" />
+    ) : (
+        "Run"
+    )}
+</Button>
+
+<Button
+    variant="contained"
+    color="secondary"
+    onClick={handleSubmit}
+    style={{
+        backgroundColor: "#d32f2f",
+        color: "#fff",
+        position: "relative",
+    }}
+    disabled={running}
+>
+    {running ? (
+        <CircularProgress size={24} color="inherit" />
+    ) : (
+        "Submit"
+    )}
+</Button>
+
             </div>
         </Container>
     );
 };
 
-export default CodeEditorComponent;
+export default Problem;
+/* eslint-disable react-hooks/exhaustive-deps */

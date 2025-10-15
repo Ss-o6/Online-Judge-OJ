@@ -153,11 +153,11 @@ const SignUp = () => {
   };
 
   const handleGoogleSignIn = async () => {
-    window.location.href = "https://backend.online-judge.site/auth/google";
+    window.location.href = "http://localhost:5000/auth/google";
   };
 
   const handleGitHubSignIn = () => {
-    window.location.href = "https://backend.online-judge.site/auth/github";
+    window.location.href = "http://localhost:5000/auth/github";
   };
 
   return (
