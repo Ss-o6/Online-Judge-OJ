@@ -11,7 +11,7 @@ const Dashboard = () => {
   const [solvedCount, setSolvedCount] = useState(0);
   const [contestsParticipated, setContestsParticipated] = useState(0);
 
- useEffect(() => {
+useEffect(() => {
   const fetchUserData = async () => {
     try {
       const token = localStorage.getItem("token");
@@ -32,22 +32,34 @@ const Dashboard = () => {
       const userData = response.data.user;
       const solvedProblems = response.data.problems || [];
 
-      // Create a map to count unique successful problems
-      const uniqueSolvedMap = new Map();
+      // Use a Set to track unique successful problems
+      const uniqueSuccessfulProblems = new Set();
 
-      solvedProblems.forEach((p) => {
-        const problemId = String(p.id); // normalize ID to string
-        const isSuccess = p.status === "success" || p.testCasesPassed === p.totalTestCases;
+      // Fetch problem details one by one to check submissions
+      for (const p of solvedProblems) {
+        const problemId = String(p.id || p.problemID);
 
-        // Add only successful problems and avoid duplicates
-        if (isSuccess && !uniqueSolvedMap.has(problemId)) {
-          uniqueSolvedMap.set(problemId, p);
+        if (uniqueSuccessfulProblems.has(problemId)) continue; // already counted
+
+        const problemResponse = await api.get(`/problem/${problemId}`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+
+        const problemData = problemResponse.data.problem;
+
+        // Check if the user has at least one accepted submission
+        const isSuccess = problemData.submissions.some(
+          (sub) => sub.user === userData.username && sub.result === "Accepted"
+        );
+
+        if (isSuccess) {
+          uniqueSuccessfulProblems.add(problemId);
         }
-      });
+      }
 
       setUser(userData);
       setIsAdmin(userData.role === "admin");
-      setSolvedCount(uniqueSolvedMap.size); // unique successful problems
+      setSolvedCount(uniqueSuccessfulProblems.size);
       setContestsParticipated(response.data.contests?.length || 0);
 
     } catch (error) {
