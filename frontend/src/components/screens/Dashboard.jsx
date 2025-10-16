@@ -32,10 +32,8 @@ useEffect(() => {
       const userData = response.data.user;
       const solvedProblems = response.data.problems || [];
 
-      // Use a Set to track unique successful problems
       const uniqueSuccessfulProblems = new Set();
 
-      // Fetch problem details one by one to check submissions
       for (const p of solvedProblems) {
         const problemId = String(p.id || p.problemID);
 
@@ -47,7 +45,12 @@ useEffect(() => {
 
         const problemData = problemResponse.data.problem;
 
-        // Check if the user has at least one accepted submission
+        if (!problemData) {
+          console.warn(`Problem not found: ${problemId}`);
+          continue; // skip if problem not found
+        }
+
+        // Check if user has at least one accepted submission
         const isSuccess = problemData.submissions.some(
           (sub) => sub.user === userData.username && sub.result === "Accepted"
         );
