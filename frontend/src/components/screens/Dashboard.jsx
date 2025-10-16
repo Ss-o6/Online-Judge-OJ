@@ -32,18 +32,22 @@ const Dashboard = () => {
       const userData = response.data.user;
       const solvedProblems = response.data.problems || [];
 
-      // Filter unique successful problems
+      // Create a map to count unique successful problems
       const uniqueSolvedMap = new Map();
+
       solvedProblems.forEach((p) => {
+        const problemId = String(p.id); // normalize ID to string
         const isSuccess = p.status === "success" || p.testCasesPassed === p.totalTestCases;
-        if (isSuccess && !uniqueSolvedMap.has(p.id)) {
-          uniqueSolvedMap.set(p.id, p);
+
+        // Add only successful problems and avoid duplicates
+        if (isSuccess && !uniqueSolvedMap.has(problemId)) {
+          uniqueSolvedMap.set(problemId, p);
         }
       });
 
       setUser(userData);
       setIsAdmin(userData.role === "admin");
-      setSolvedCount(uniqueSolvedMap.size); // ✅ unique successful problems
+      setSolvedCount(uniqueSolvedMap.size); // unique successful problems
       setContestsParticipated(response.data.contests?.length || 0);
 
     } catch (error) {
