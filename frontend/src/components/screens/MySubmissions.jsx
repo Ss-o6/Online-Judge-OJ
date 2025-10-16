@@ -16,27 +16,33 @@ const SimpleTable = () => {
   const [currentResult, setCurrentResult] = React.useState("");
 
   React.useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const token = localStorage.getItem("token");
-        if (!token) return;
+  const fetchData = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      if (!token) return;
 
-        const userRes = await api.get("/me", { headers: { Authorization: `Bearer ${token}` } });
-        const username = userRes.data.user.username;
+      // Get logged-in user info
+      const userRes = await api.get("/me", { headers: { Authorization: `Bearer ${token}` } });
+      const userId = userRes.data.user.id; // Use user ID instead of username
 
-        const res = await api.get(`/problem/${id}`, { headers: { Authorization: `Bearer ${token}` } });
-        setProblem(res.data.problem);
+      // Get problem and all submissions
+      const res = await api.get(`/problem/${id}`, { headers: { Authorization: `Bearer ${token}` } });
+      setProblem(res.data.problem);
 
-        const mySubmissions = res.data.problem.submissions.filter(sub => sub.user === username);
+      // Filter submissions to only the current user
+      const mySubmissions = res.data.problem.submissions.filter(
+        sub => sub.user === userId || sub.user?._id === userId
+      );
 
-        setRows(mySubmissions);
-      } catch (err) {
-        console.error(err);
-      }
-    };
+      setRows(mySubmissions);
+    } catch (err) {
+      console.error(err);
+    }
+  };
 
-    fetchData();
-  }, [id]);
+  fetchData();
+}, [id]);
+
 
   const handleOpen = (code, result) => {
     setCurrentCode(code);

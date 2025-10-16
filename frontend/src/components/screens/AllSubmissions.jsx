@@ -14,7 +14,7 @@ const SimpleTable = () => {
   const [currentCode, setCurrentCode] = React.useState("");
   const [currentResult, setCurrentResult] = React.useState("");
 
- React.useEffect(() => {
+React.useEffect(() => {
   const fetchData = async () => {
     try {
       const token = localStorage.getItem("token");
@@ -36,6 +36,7 @@ const SimpleTable = () => {
 
   fetchData();
 }, [id]);
+
 
 
   const handleOpen = (code, result) => {
