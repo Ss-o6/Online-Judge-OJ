@@ -88,78 +88,114 @@ const UpdateProfile = () => {
     }
 
     return (
-        <ThemeProvider theme={defaultTheme}>
-            <div style={{
-                backgroundColor: '#f0f4f8',
-                minHeight: '100vh',
-                display: 'flex',
-                justifyContent: 'center',
-                alignItems: 'center',
-                padding: '15px'
-            }}>
-                <Container component="main" maxWidth="xs" style={{ backgroundColor: 'white', padding: '20px', borderRadius: '10px', boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)' }}>
-                    <CssBaseline />
-                    <Box
+       <ThemeProvider theme={defaultTheme}>
+    <div
+        style={{
+            backgroundColor: '#F5F5F0', // page background
+            minHeight: '100vh',
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            padding: '15px'
+        }}
+    >
+        <Container
+            component="main"
+            maxWidth="xs"
+            style={{
+                backgroundColor: '#E6D8C3', // card background
+                padding: '20px',
+                borderRadius: '10px',
+                boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)'
+            }}
+        >
+            <CssBaseline />
+            <Box
+                sx={{
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "center",
+                }}
+            >
+                <Typography
+                    component="h1"
+                    variant="h4"
+                    gutterBottom
+                    sx={{
+                        fontFamily: 'Roboto Slab, serif',
+                        fontWeight: 'bold',
+                        color: "#5D866C" // heading color
+                    }}
+                >
+                    Update Profile
+                </Typography>
+                <Avatar sx={{ m: 1, bgcolor: "#C2A68C" }}>
+                    <AccountCircleIcon />
+                </Avatar>
+                <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
+                    <TextField
+                        margin="normal"
+                        required
+                        fullWidth
+                        id="name"
+                        label="Name"
+                        name="name"
+                        autoComplete="name"
+                        autoFocus
+                        value={user.name}
+                        onChange={handleChange}
                         sx={{
-                            display: "flex",
-                            flexDirection: "column",
-                            alignItems: "center",
+                            fontFamily: "Roboto, sans-serif",
+                            input: { color: "#5D866C" },
+                            label: { color: "#5D866C" },
+                            "& .MuiOutlinedInput-root": {
+                                "& fieldset": { borderColor: "#C2A68C" },
+                                "&:hover fieldset": { borderColor: "#5D866C" },
+                                "&.Mui-focused fieldset": { borderColor: "#5D866C" },
+                            },
+                        }}
+                    />
+                    <TextField
+                        margin="normal"
+                        required
+                        fullWidth
+                        id="username"
+                        label="Username"
+                        name="username"
+                        autoComplete="username"
+                        value={user.username}
+                        onChange={handleChange}
+                        sx={{
+                            fontFamily: "Roboto, sans-serif",
+                            input: { color: "#5D866C" },
+                            label: { color: "#5D866C" },
+                            "& .MuiOutlinedInput-root": {
+                                "& fieldset": { borderColor: "#C2A68C" },
+                                "&:hover fieldset": { borderColor: "#5D866C" },
+                                "&.Mui-focused fieldset": { borderColor: "#5D866C" },
+                            },
+                        }}
+                    />
+                    <Button
+                        type="submit"
+                        fullWidth
+                        variant="contained"
+                        sx={{
+                            mt: 3,
+                            mb: 2,
+                            backgroundColor: "#1E90FF", // blue button
+                            "&:hover": { backgroundColor: "#1C86EE" },
+                            fontFamily: "Roboto, sans-serif"
                         }}
                     >
-                        <Typography
-                            component="h1"
-                            variant="h4"
-                            gutterBottom
-                            sx={{
-                                fontFamily: 'Roboto Slab, serif',
-                                fontWeight: 'bold',
-                            }}
-                        >
-                            Update Profile
-                        </Typography>
-                        <Avatar sx={{ m: 1, bgcolor: "secondary.main" }}>
-                            <AccountCircleIcon />
-                        </Avatar>
-                        <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
-                            <TextField
-                                margin="normal"
-                                required
-                                fullWidth
-                                id="name"
-                                label="Name"
-                                name="name"
-                                autoComplete="name"
-                                autoFocus
-                                value={user.name}
-                                onChange={handleChange}
-                                sx={{ fontFamily: "Roboto, sans-serif" }}
-                            />
-                            <TextField
-                                margin="normal"
-                                required
-                                fullWidth
-                                id="username"
-                                label="Username"
-                                name="username"
-                                autoComplete="username"
-                                value={user.username}
-                                onChange={handleChange}
-                                sx={{ fontFamily: "Roboto, sans-serif" }}
-                            />
-                            <Button
-                                type="submit"
-                                fullWidth
-                                variant="contained"
-                                sx={{ mt: 3, mb: 2, backgroundColor: "#333", fontFamily: "Roboto, sans-serif" }}
-                            >
-                                Update Profile
-                            </Button>
-                        </Box>
-                    </Box>
-                </Container>
-            </div>
-        </ThemeProvider>
-    );
+                        Update Profile
+                    </Button>
+                </Box>
+            </Box>
+        </Container>
+    </div>
+</ThemeProvider>
+    )
 };
 
 export default UpdateProfile;

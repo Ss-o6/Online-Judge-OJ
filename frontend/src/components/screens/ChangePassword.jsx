@@ -121,85 +121,132 @@ const ChangePassword = () => {
     };
 
     return (
-        <ThemeProvider theme={defaultTheme}>
-            <div style={{
-                backgroundColor: '#f0f4f8',
-                minHeight: '100vh',
-                display: 'flex',
-                justifyContent: 'center',
-                alignItems: 'center',
-                padding: '15px',
-            }}>
-                <Container component="main" maxWidth="xs" style={{ backgroundColor: 'white', padding: '20px', borderRadius: '10px', boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)' }}>
-                    <CssBaseline />
-                    <Box
+       <ThemeProvider theme={defaultTheme}>
+    <div
+        style={{
+            backgroundColor: '#F5F5F0', // page background
+            minHeight: '100vh',
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            padding: '15px',
+        }}
+    >
+        <Container
+            component="main"
+            maxWidth="xs"
+            style={{
+                backgroundColor: '#E6D8C3', // card background
+                padding: '20px',
+                borderRadius: '10px',
+                boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)'
+            }}
+        >
+            <CssBaseline />
+            <Box
+                sx={{
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "center",
+                }}
+            >
+                <Avatar sx={{ m: 1, bgcolor: "#C2A68C" }}>
+                    <LockOutlinedIcon />
+                </Avatar>
+                <Typography
+                    component="h1"
+                    variant="h5"
+                    sx={{ color: "#5D866C", fontWeight: "bold" }}
+                >
+                    Change Password
+                </Typography>
+                <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3 }}>
+                    <TextField
+                        required
+                        fullWidth
+                        name="currentPassword"
+                        label="Current Password"
+                        type="password"
+                        id="currentPassword"
+                        autoComplete="current-password"
+                        value={currentPassword}
+                        onChange={(e) => setCurrentPassword(e.target.value)}
                         sx={{
-                            display: "flex",
-                            flexDirection: "column",
-                            alignItems: "center",
+                            mt: 2,
+                            input: { color: "#5D866C" },
+                            label: { color: "#5D866C" },
+                            "& .MuiOutlinedInput-root": {
+                                "& fieldset": { borderColor: "#C2A68C" },
+                                "&:hover fieldset": { borderColor: "#5D866C" },
+                                "&.Mui-focused fieldset": { borderColor: "#5D866C" },
+                            },
+                        }}
+                    />
+                    <TextField
+                        required
+                        fullWidth
+                        name="newPassword"
+                        label="New Password"
+                        type="password"
+                        id="newPassword"
+                        autoComplete="new-password"
+                        value={newPassword}
+                        onChange={handleNewPasswordChange}
+                        error={!!passwordError}
+                        helperText={passwordError}
+                        sx={{
+                            mt: 2,
+                            input: { color: "#5D866C" },
+                            label: { color: "#5D866C" },
+                            "& .MuiOutlinedInput-root": {
+                                "& fieldset": { borderColor: "#C2A68C" },
+                                "&:hover fieldset": { borderColor: "#5D866C" },
+                                "&.Mui-focused fieldset": { borderColor: "#5D866C" },
+                            },
+                        }}
+                    />
+                    <TextField
+                        required
+                        fullWidth
+                        name="confirmPassword"
+                        label="Confirm New Password"
+                        type="password"
+                        id="confirmPassword"
+                        autoComplete="new-password"
+                        value={confirmPassword}
+                        onChange={handleConfirmPasswordChange}
+                        error={!!passwordMatchError}
+                        helperText={passwordMatchError}
+                        sx={{
+                            mt: 2,
+                            input: { color: "#5D866C" },
+                            label: { color: "#5D866C" },
+                            "& .MuiOutlinedInput-root": {
+                                "& fieldset": { borderColor: "#C2A68C" },
+                                "&:hover fieldset": { borderColor: "#5D866C" },
+                                "&.Mui-focused fieldset": { borderColor: "#5D866C" },
+                            },
+                        }}
+                    />
+                    <Button
+                        type="submit"
+                        fullWidth
+                        variant="contained"
+                        sx={{
+                            mt: 3,
+                            mb: 2,
+                            backgroundColor: "#1E90FF", // blue button
+                            "&:hover": { backgroundColor: "#1C86EE" }
                         }}
                     >
-                        <Avatar sx={{ m: 1, bgcolor: "secondary.main" }}>
-                            <LockOutlinedIcon />
-                        </Avatar>
-                        <Typography component="h1" variant="h5">
-                            Change Password
-                        </Typography>
-                        <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3 }}>
-                            <TextField
-                                required
-                                fullWidth
-                                name="currentPassword"
-                                label="Current Password"
-                                type="password"
-                                id="currentPassword"
-                                autoComplete="current-password"
-                                value={currentPassword}
-                                onChange={(e) => setCurrentPassword(e.target.value)}
-                                sx={{ mt: 2 }}
-                            />
-                            <TextField
-                                required
-                                fullWidth
-                                name="newPassword"
-                                label="New Password"
-                                type="password"
-                                id="newPassword"
-                                autoComplete="new-password"
-                                value={newPassword}
-                                onChange={handleNewPasswordChange}
-                                error={!!passwordError}
-                                helperText={passwordError}
-                                sx={{ mt: 2 }}
-                            />
-                            <TextField
-                                required
-                                fullWidth
-                                name="confirmPassword"
-                                label="Confirm New Password"
-                                type="password"
-                                id="confirmPassword"
-                                autoComplete="new-password"
-                                value={confirmPassword}
-                                onChange={handleConfirmPasswordChange}
-                                error={!!passwordMatchError}
-                                helperText={passwordMatchError}
-                                sx={{ mt: 2 }}
-                            />
-                            <Button
-                                type="submit"
-                                fullWidth
-                                variant="contained"
-                                sx={{ mt: 3, mb: 2 }}
-                            >
-                                Change Password
-                            </Button>
-                        </Box>
-                    </Box>
-                </Container>
-            </div>
-        </ThemeProvider>
-    );
+                        Change Password
+                    </Button>
+                </Box>
+            </Box>
+        </Container>
+    </div>
+</ThemeProvider>
+    )
 }
 
 export default ChangePassword;

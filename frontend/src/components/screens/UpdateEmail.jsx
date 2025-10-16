@@ -148,100 +148,151 @@ const UpdateEmail = () => {
         }
     };
 
-    return (
-        <ThemeProvider theme={defaultTheme}>
-            <div style={{
-                backgroundColor: '#f0f4f8',
+    
+        return (
+    <ThemeProvider theme={defaultTheme}>
+        <div
+            style={{
+                backgroundColor: '#F5F5F0', // page background
                 minHeight: '100vh',
                 display: 'flex',
                 justifyContent: 'center',
                 alignItems: 'center',
                 padding: '15px'
-            }}>
-                <Container component="main" maxWidth="xs" style={{ backgroundColor: 'white', padding: '20px', borderRadius: '10px', boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)' }}>
-                    <CssBaseline />
-                    <Box
+            }}
+        >
+            <Container
+                component="main"
+                maxWidth="xs"
+                style={{
+                    backgroundColor: '#E6D8C3', // card background
+                    padding: '20px',
+                    borderRadius: '10px',
+                    boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)'
+                }}
+            >
+                <CssBaseline />
+                <Box
+                    sx={{
+                        display: "flex",
+                        flexDirection: "column",
+                        alignItems: "center",
+                    }}
+                >
+                    <Avatar sx={{ m: 1, bgcolor: "#C2A68C" }}>
+                        <EmailIcon />
+                    </Avatar>
+                    <Typography
+                        component="h1"
+                        variant="h5"
                         sx={{
-                            display: "flex",
-                            flexDirection: "column",
-                            alignItems: "center",
+                            fontFamily: 'Roboto Slab, serif',
+                            fontWeight: 'bold',
+                            color: "#5D866C" // heading color
                         }}
                     >
-                        <Avatar sx={{ m: 1, bgcolor: "secondary.main" }}>
-                            <EmailIcon />
-                        </Avatar>
-                        <Typography
-                            component="h1"
-                            variant="h5"
+                        Update Email
+                    </Typography>
+                    <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
+                        <TextField
+                            margin="normal"
+                            required
+                            fullWidth
+                            id="email"
+                            label="Email"
+                            name="email"
+                            autoComplete="email"
+                            autoFocus
+                            value={user.email}
+                            onChange={handleEmailChange}
                             sx={{
-                                fontFamily: 'Roboto Slab, serif',
-                                fontWeight: 'bold',
+                                input: { color: "#5D866C" },
+                                label: { color: "#5D866C" },
+                                "& .MuiOutlinedInput-root": {
+                                    "& fieldset": { borderColor: "#C2A68C" },
+                                    "&:hover fieldset": { borderColor: "#5D866C" },
+                                    "&.Mui-focused fieldset": { borderColor: "#5D866C" },
+                                },
                             }}
-                        >
-                            Update Email
-                        </Typography>
-                        <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
-                            <TextField
-                                margin="normal"
-                                required
+                        />
+                        {!otpSent && (
+                            <Button
                                 fullWidth
-                                id="email"
-                                label="Email"
-                                name="email"
-                                autoComplete="email"
-                                autoFocus
-                                value={user.email}
-                                onChange={handleEmailChange}
-                            />
-                            {!otpSent && (
+                                variant="contained"
+                                onClick={handleSendOtp}
+                                sx={{
+                                    mt: 3,
+                                    mb: 2,
+                                    backgroundColor: "#1E90FF", // blue button
+                                    "&:hover": { backgroundColor: "#1C86EE" },
+                                    fontFamily: "Roboto, sans-serif"
+                                }}
+                            >
+                                Send OTP
+                            </Button>
+                        )}
+                        {otpSent && !otpVerified && (
+                            <>
+                                <TextField
+                                    margin="normal"
+                                    required
+                                    fullWidth
+                                    id="otp"
+                                    label="OTP"
+                                    name="otp"
+                                    autoComplete="otp"
+                                    value={otp}
+                                    onChange={handleOtpChange}
+                                    sx={{
+                                        input: { color: "#5D866C" },
+                                        label: { color: "#5D866C" },
+                                        "& .MuiOutlinedInput-root": {
+                                            "& fieldset": { borderColor: "#C2A68C" },
+                                            "&:hover fieldset": { borderColor: "#5D866C" },
+                                            "&.Mui-focused fieldset": { borderColor: "#5D866C" },
+                                        },
+                                    }}
+                                />
                                 <Button
                                     fullWidth
                                     variant="contained"
-                                    onClick={handleSendOtp}
-                                    sx={{ mt: 3, mb: 2, backgroundColor: "#333", fontFamily: "Roboto, sans-serif" }}
+                                    onClick={handleVerifyOtp}
+                                    sx={{
+                                        mt: 3,
+                                        mb: 2,
+                                        backgroundColor: "#1E90FF",
+                                        "&:hover": { backgroundColor: "#1C86EE" },
+                                        fontFamily: "Roboto, sans-serif"
+                                    }}
                                 >
-                                    Send OTP
+                                    Verify OTP
                                 </Button>
-                            )}
-                            {otpSent && !otpVerified && (
-                                <>
-                                    <TextField
-                                        margin="normal"
-                                        required
-                                        fullWidth
-                                        id="otp"
-                                        label="OTP"
-                                        name="otp"
-                                        autoComplete="otp"
-                                        value={otp}
-                                        onChange={handleOtpChange}
-                                    />
-                                    <Button
-                                        fullWidth
-                                        variant="contained"
-                                        onClick={handleVerifyOtp}
-                                        sx={{ mt: 3, mb: 2, backgroundColor: "#333", fontFamily: "Roboto, sans-serif" }}
-                                    >
-                                        Verify OTP
-                                    </Button>
-                                </>
-                            )}
-                            {otpVerified && (
-                                <Button
-                                    type="submit"
-                                    fullWidth
-                                    variant="contained"
-                                    sx={{ mt: 3, mb: 2, backgroundColor: "#333", fontFamily: "Roboto, sans-serif" }}
-                                >
-                                    Update Email
-                                </Button>
-                            )}
-                        </Box>
+                            </>
+                        )}
+                        {otpVerified && (
+                            <Button
+                                type="submit"
+                                fullWidth
+                                variant="contained"
+                                sx={{
+                                    mt: 3,
+                                    mb: 2,
+                                    backgroundColor: "#1E90FF",
+                                    "&:hover": { backgroundColor: "#1C86EE" },
+                                    fontFamily: "Roboto, sans-serif"
+                                }}
+                            >
+                                Update Email
+                            </Button>
+                        )}
                     </Box>
-                </Container>
-            </div>
-        </ThemeProvider>
-    );
+                </Box>
+            </Container>
+        </div>
+    </ThemeProvider>
+);
+
+       
 };
 
 export default UpdateEmail;
