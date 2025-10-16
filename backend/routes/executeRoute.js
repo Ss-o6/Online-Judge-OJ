@@ -61,19 +61,19 @@ const executeCode = (filePath, language, inputPath, timeLimit = 5, memoryLimit =
         const BASE_URL = process.env.AWS_BASE_URL;
         switch (language) {
              case "c":
-                command = `docker run --rm --memory=${memoryLimit} --cpus=1 --ulimit cpu=${timeLimit} --volume ${filePath}:/code/code.c --volume ${inputPath}:/input.txt ${BASE_URL}/oj-deploy:c sh -c "gcc /code/code.c -o /code/code.out && /code/code.out < /input.txt"`;
+                command = `docker run --rm --memory=${memoryLimit} --cpus=1 --ulimit cpu=${timeLimit} --volume ${filePath}:/code/code.c --volume ${inputPath}:/input.txt ${BASE_URL}/compiler/c-docker sh -c "gcc /code/code.c -o /code/code.out && /code/code.out < /input.txt"`;
                 break;
             case "cpp":
-                command = `docker run --rm --memory=${memoryLimit} --cpus=1 --ulimit cpu=${timeLimit} --volume ${filePath}:/code/code.cpp --volume ${inputPath}:/input.txt ${BASE_URL}/oj-deploy:cpp sh -c "g++ /code/code.cpp -o /code/code.out && /code/code.out < /input.txt"`;
+                command = `docker run --rm --memory=${memoryLimit} --cpus=1 --ulimit cpu=${timeLimit} --volume ${filePath}:/code/code.cpp --volume ${inputPath}:/input.txt ${BASE_URL}/compiler/cpp-docker sh -c "g++ /code/code.cpp -o /code/code.out && /code/code.out < /input.txt"`;
                 break;
             case "java":
-                command = `docker run --rm --memory=${memoryLimit} --cpus=1 --ulimit cpu=${timeLimit} --volume ${filePath}:/code/Main.java --volume ${inputPath}:/input.txt ${BASE_URL}/oj-deploy:java sh -c "javac /code/Main.java && java -cp /code Main < /input.txt"`;
+                command = `docker run --rm --memory=${memoryLimit} --cpus=1 --ulimit cpu=${timeLimit} --volume ${filePath}:/code/Main.java --volume ${inputPath}:/input.txt ${BASE_URL}/compiler/java-docker sh -c "javac /code/Main.java && java -cp /code Main < /input.txt"`;
                 break;
             case "python":
-                command = `docker run --rm --memory=${memoryLimit} --cpus=1 --ulimit cpu=${timeLimit} --volume ${filePath}:/code/code.py --volume ${inputPath}:/code/input.txt ${BASE_URL}/oj-deploy:python`;
+                command = `docker run --rm --memory=${memoryLimit} --cpus=1 --ulimit cpu=${timeLimit} --volume ${filePath}:/code/code.py --volume ${inputPath}:/code/input.txt ${BASE_URL}/compiler/python-docker`;
                 break;
             case "javascript":
-                command = `docker run --rm --memory=${memoryLimit} --cpus=1 --ulimit cpu=${timeLimit} --volume ${filePath}:/code/code.js --volume ${inputPath}:/code/input.txt ${BASE_URL}/oj-deploy:js`;
+                command = `docker run --rm --memory=${memoryLimit} --cpus=1 --ulimit cpu=${timeLimit} --volume ${filePath}:/code/code.js --volume ${inputPath}:/code/input.txt ${BASE_URL}/compiler/js-docker`;
                 break;
             default:
                 reject(new Error("Unsupported language"));
