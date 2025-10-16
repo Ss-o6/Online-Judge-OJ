@@ -11,36 +11,50 @@ const Dashboard = () => {
   const [solvedCount, setSolvedCount] = useState(0);
   const [contestsParticipated, setContestsParticipated] = useState(0);
 
-  useEffect(() => {
-    const fetchUserData = async () => {
-      try {
-        const token = localStorage.getItem("token");
-        if (!token) {
-          navigate("/login");
-          return;
-        }
-
-        const response = await api.get("/me", {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-
-        if (!response.data.user) {
-          navigate("/login");
-          return;
-        }
-
-        setUser(response.data.user);
-        setIsAdmin(response.data.user.role === "admin");
-        setSolvedCount(response.data.user.solvedProblems || 0);
-        setContestsParticipated(response.data.user.contestsParticipated || 0);
-      } catch (error) {
-        console.error("Failed to fetch user data:", error);
+ useEffect(() => {
+  const fetchUserData = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      if (!token) {
         navigate("/login");
+        return;
       }
-    };
 
-    fetchUserData();
-  }, [navigate]);
+      const response = await api.get("/me", {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      if (!response.data.user) {
+        navigate("/login");
+        return;
+      }
+
+      const userData = response.data.user;
+      const solvedProblems = response.data.problems || [];
+
+      // Filter unique successful problems
+      const uniqueSolvedMap = new Map();
+      solvedProblems.forEach((p) => {
+        const isSuccess = p.status === "success" || p.testCasesPassed === p.totalTestCases;
+        if (isSuccess && !uniqueSolvedMap.has(p.id)) {
+          uniqueSolvedMap.set(p.id, p);
+        }
+      });
+
+      setUser(userData);
+      setIsAdmin(userData.role === "admin");
+      setSolvedCount(uniqueSolvedMap.size); // ✅ unique successful problems
+      setContestsParticipated(response.data.contests?.length || 0);
+
+    } catch (error) {
+      console.error("Failed to fetch user data:", error);
+      navigate("/login");
+    }
+  };
+
+  fetchUserData();
+}, [navigate]);
+
 
   if (!user) {
     return <div className="text-center text-lg">Loading...</div>;
