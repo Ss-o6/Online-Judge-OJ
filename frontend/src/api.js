@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const API_URL = "http://13.203.92.53:5000";
+const API_URL = "https://algohub-backend.site";
 
 const api = axios.create({
     baseURL: API_URL,

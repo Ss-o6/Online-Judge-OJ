@@ -153,11 +153,11 @@ const SignUp = () => {
   };
 
   const handleGoogleSignIn = async () => {
-    window.location.href = "http://13.203.92.53:5000/auth/google";
+    window.location.href = "https://algohub-backend.site/auth/google";
   };
 
   const handleGitHubSignIn = () => {
-    window.location.href = "http://13.203.92.53:5000/run/auth/github";
+    window.location.href = "https://algohub-backend.site/auth/github";
   };
 
   return (

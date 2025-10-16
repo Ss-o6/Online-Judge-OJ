@@ -7,14 +7,14 @@ import User from "../models/User.js";
 import axios from "axios";
 
 // Use environment variable for backend callback base URL
-const BACKEND_URL = "http://13.203.92.53:5000";
+
 
 passport.use(
     new GoogleStrategy(
         {
             clientID: process.env.GOOGLE_CLIENT_ID,
             clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-            callbackURL: `${BACKEND_URL}/auth/google/callback`,
+            callbackURL: "https://algohub-backend.site/auth/google/callback",
         },
         async (accessToken, refreshToken, profile, done) => {
             try {
@@ -49,7 +49,7 @@ passport.use(
         {
             clientID: process.env.GITHUB_CLIENT_ID,
             clientSecret: process.env.GITHUB_CLIENT_SECRET,
-            callbackURL: `${BACKEND_URL}/auth/github/callback`,
+            callbackURL: "https://algohub-backend.site/auth/github/callback",
         },
         async (accessToken, refreshToken, profile, done) => {
             try {
