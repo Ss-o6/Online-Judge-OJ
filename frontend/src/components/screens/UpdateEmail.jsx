@@ -206,8 +206,8 @@ const UpdateEmail = () => {
                             value={user.email}
                             onChange={handleEmailChange}
                             sx={{
-                                input: { color: "#5D866C" },
-                                label: { color: "#5D866C" },
+                                input: { color: "#000703ff" },
+                                label: { color: "#000803ff" },
                                 "& .MuiOutlinedInput-root": {
                                     "& fieldset": { borderColor: "#C2A68C" },
                                     "&:hover fieldset": { borderColor: "#5D866C" },

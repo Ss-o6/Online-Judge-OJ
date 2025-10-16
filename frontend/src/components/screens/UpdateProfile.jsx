@@ -146,8 +146,8 @@ const UpdateProfile = () => {
                         onChange={handleChange}
                         sx={{
                             fontFamily: "Roboto, sans-serif",
-                            input: { color: "#5D866C" },
-                            label: { color: "#5D866C" },
+                            input: { color: "#010e06ff" },
+                            label: { color: "#000000ff" },
                             "& .MuiOutlinedInput-root": {
                                 "& fieldset": { borderColor: "#C2A68C" },
                                 "&:hover fieldset": { borderColor: "#5D866C" },
@@ -167,8 +167,8 @@ const UpdateProfile = () => {
                         onChange={handleChange}
                         sx={{
                             fontFamily: "Roboto, sans-serif",
-                            input: { color: "#5D866C" },
-                            label: { color: "#5D866C" },
+                            input: { color: "#010c05ff" },
+                            label: { color: "#000502ff" },
                             "& .MuiOutlinedInput-root": {
                                 "& fieldset": { borderColor: "#C2A68C" },
                                 "&:hover fieldset": { borderColor: "#5D866C" },

@@ -173,8 +173,8 @@ const ChangePassword = () => {
                         onChange={(e) => setCurrentPassword(e.target.value)}
                         sx={{
                             mt: 2,
-                            input: { color: "#5D866C" },
-                            label: { color: "#5D866C" },
+                            input: { color: "#000803ff" },
+                            label: { color: "#000201ff" },
                             "& .MuiOutlinedInput-root": {
                                 "& fieldset": { borderColor: "#C2A68C" },
                                 "&:hover fieldset": { borderColor: "#5D866C" },
@@ -196,8 +196,8 @@ const ChangePassword = () => {
                         helperText={passwordError}
                         sx={{
                             mt: 2,
-                            input: { color: "#5D866C" },
-                            label: { color: "#5D866C" },
+                            input: { color: "#000000ff" },
+                            label: { color: "#010e05ff" },
                             "& .MuiOutlinedInput-root": {
                                 "& fieldset": { borderColor: "#C2A68C" },
                                 "&:hover fieldset": { borderColor: "#5D866C" },
@@ -219,8 +219,8 @@ const ChangePassword = () => {
                         helperText={passwordMatchError}
                         sx={{
                             mt: 2,
-                            input: { color: "#5D866C" },
-                            label: { color: "#5D866C" },
+                            input: { color: "#0c0101ff" },
+                            label: { color: "#000702ff" },
                             "& .MuiOutlinedInput-root": {
                                 "& fieldset": { borderColor: "#C2A68C" },
                                 "&:hover fieldset": { borderColor: "#5D866C" },
