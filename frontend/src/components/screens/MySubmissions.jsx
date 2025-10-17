@@ -16,35 +16,34 @@ const SimpleTable = () => {
   const [currentResult, setCurrentResult] = React.useState("");
 
   React.useEffect(() => {
-  const fetchData = async () => {
-    try {
-      const token = localStorage.getItem("token");
-      if (!token) return;
+    const fetchData = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        if (!token) return;
 
-      // Get logged-in user info
-      const userRes = await api.get("/me", { headers: { Authorization: `Bearer ${token}` } });
-      const userId = userRes.data.user.id; // Use user ID instead of username
+        // Get logged-in user info
+        const userRes = await api.get("/me", { headers: { Authorization: `Bearer ${token}` } });
+        const userId = userRes.data.user.id; // Logged-in user ID
 
-      // Get problem and all submissions
-      const res = await api.get(`/problem/${id}`, { headers: { Authorization: `Bearer ${token}` } });
-      setProblem(res.data.problem);
+        // Get problem with all submissions
+        const res = await api.get(`/problem/${id}`, { headers: { Authorization: `Bearer ${token}` } });
+        setProblem(res.data.problem);
 
-      // Filter submissions to only the current user
-     const mySubmissions = res.data.problem.submissions.filter(sub => {
-  if (!sub.user) return false;
-  // Handle if sub.user is a string ID or an object with _id
-  return sub.user === userId || sub.user._id === userId;
-});
+        // Filter submissions to **only the current user**
+        const mySubmissions = res.data.problem.submissions.filter(sub => {
+          if (!sub.user) return false;
+          // Handle if sub.user is a string ID or an object with _id
+          return sub.user === userId || sub.user._id === userId;
+        });
 
-setRows(mySubmissions);
-    } catch (err) {
-      console.error(err);
-    }
-  };
+        setRows(mySubmissions);
+      } catch (err) {
+        console.error(err);
+      }
+    };
 
-  fetchData();
-}, [id]);
-
+    fetchData();
+  }, [id]);
 
   const handleOpen = (code, result) => {
     setCurrentCode(code);
@@ -75,7 +74,7 @@ setRows(mySubmissions);
                 const bgColor = row.result === "Accepted" ? "#c3e6cb" : "#f5c6cb";
                 return (
                   <TableRow key={index} sx={{ backgroundColor: bgColor }}>
-                    <TableCell>{row.user}</TableCell>
+                    <TableCell>{row.user?.username || row.user?._id || row.user}</TableCell>
                     <TableCell>
                       <Link to={`/problem/${id}`} className="text-blue-500 hover:underline">
                         {problem.title}
@@ -110,4 +109,4 @@ setRows(mySubmissions);
   );
 };
 
-export default SimpleTable; 
+export default SimpleTable;
