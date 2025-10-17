@@ -29,10 +29,16 @@ const SimpleTable = () => {
       const res = await api.get(`/problem/${id}`, { headers: { Authorization: `Bearer ${token}` } });
       setProblem(res.data.problem);
 
-      // Filter submissions to only those by the logged-in user
-      const userSubmissions = res.data.problem.submissions.filter(
-        (submission) => submission.user.toString() === userId.toString()
-      );
+      // Filter only submissions by logged-in user
+      const userSubmissions = res.data.problem.submissions.filter((submission) => {
+        // If submission.user is an object with _id
+        if (submission.user && submission.user._id) {
+          return submission.user._id.toString() === userId.toString();
+        }
+        // If submission.user is just an ID
+        return submission.user.toString() === userId.toString();
+      });
+
       setRows(userSubmissions);
 
     } catch (err) {
@@ -73,7 +79,12 @@ const SimpleTable = () => {
                 const bgColor = row.result === "Accepted" ? "#c3e6cb" : "#f5c6cb";
                 return (
                   <TableRow key={index} sx={{ backgroundColor: bgColor }}>
-                    <TableCell>{row.user}</TableCell>
+                   <TableCell>
+  {row.user
+    ? row.user.name || row.user.username || row.user
+    : "Unknown User"}
+</TableCell>
+
                     <TableCell>
                       <Link to={`/problem/${id}`} className="text-blue-500 hover:underline">
                         {problem.title}
