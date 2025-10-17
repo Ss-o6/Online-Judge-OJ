@@ -1,3 +1,4 @@
+
 import * as React from "react";
 import { Box, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, IconButton } from "@mui/material";
 import CodeIcon from "@mui/icons-material/Code";
@@ -14,30 +15,28 @@ const SimpleTable = () => {
   const [currentCode, setCurrentCode] = React.useState("");
   const [currentResult, setCurrentResult] = React.useState("");
 
-React.useEffect(() => {
-  const fetchData = async () => {
-    try {
-      const token = localStorage.getItem("token");
-      if (!token) return;
+  React.useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        if (!token) return;
 
-      // Optional: fetch user info
-      await api.get("/me", { headers: { Authorization: `Bearer ${token}` } });
+        // Optional: fetch user info (can be skipped if not needed)
+        await api.get("/me", { headers: { Authorization: `Bearer ${token}` } });
 
-      // Fetch problem with all submissions
-      const res = await api.get(`/problem/${id}`, { headers: { Authorization: `Bearer ${token}` } });
-      setProblem(res.data.problem);
+        // Fetch problem with all submissions
+        const res = await api.get(`/problem/${id}`, { headers: { Authorization: `Bearer ${token}` } });
+        setProblem(res.data.problem);
 
-      // Display all submissions (no filtering)
-      setRows(res.data.problem.submissions);
-    } catch (err) {
-      console.error(err);
-    }
-  };
+        // Show all submissions, no filtering by user
+        setRows(res.data.problem.submissions);
+      } catch (err) {
+        console.error(err);
+      }
+    };
 
-  fetchData();
-}, [id]);
-
-
+    fetchData();
+  }, [id]);
 
   const handleOpen = (code, result) => {
     setCurrentCode(code);
@@ -68,7 +67,7 @@ React.useEffect(() => {
                 const bgColor = row.result === "Accepted" ? "#c3e6cb" : "#f5c6cb";
                 return (
                   <TableRow key={index} sx={{ backgroundColor: bgColor }}>
-                    <TableCell>{row.user}</TableCell>
+                    <TableCell>{row.user?.username || row.user?._id || row.user}</TableCell>
                     <TableCell>
                       <Link to={`/problem/${id}`} className="text-blue-500 hover:underline">
                         {problem.title}

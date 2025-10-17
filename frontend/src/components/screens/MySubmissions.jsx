@@ -30,11 +30,13 @@ const SimpleTable = () => {
       setProblem(res.data.problem);
 
       // Filter submissions to only the current user
-      const mySubmissions = res.data.problem.submissions.filter(
-        sub => sub.user === userId || sub.user?._id === userId
-      );
+     const mySubmissions = res.data.problem.submissions.filter(sub => {
+  if (!sub.user) return false;
+  // Handle if sub.user is a string ID or an object with _id
+  return sub.user === userId || sub.user._id === userId;
+});
 
-      setRows(mySubmissions);
+setRows(mySubmissions);
     } catch (err) {
       console.error(err);
     }
