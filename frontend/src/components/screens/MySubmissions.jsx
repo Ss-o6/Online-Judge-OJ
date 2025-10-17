@@ -23,17 +23,17 @@ const SimpleTable = () => {
 
         // Get logged-in user info
         const userRes = await api.get("/me", { headers: { Authorization: `Bearer ${token}` } });
-        const userId = userRes.data.user.id; // Logged-in user ID
+        const userId = String(userRes.data.user.id); // Ensure string comparison
 
         // Get problem with all submissions
         const res = await api.get(`/problem/${id}`, { headers: { Authorization: `Bearer ${token}` } });
         setProblem(res.data.problem);
 
-        // Filter submissions to **only the current user**
+        // Filter submissions to only the current user (robust)
         const mySubmissions = res.data.problem.submissions.filter(sub => {
           if (!sub.user) return false;
-          // Handle if sub.user is a string ID or an object with _id
-          return sub.user === userId || sub.user._id === userId;
+          const subUserId = typeof sub.user === "string" ? sub.user : sub.user._id;
+          return String(subUserId) === userId;
         });
 
         setRows(mySubmissions);
