@@ -1,12 +1,12 @@
 import * as React from "react";
 import { Box, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, IconButton } from "@mui/material";
-import { Link, useParams } from "react-router-dom";
-import CodeIcon from '@mui/icons-material/Code';
+import { useParams, Link } from "react-router-dom";
 import Navbar from "../Navbar.jsx";
 import CodeModal from "../CodeModal.jsx";
+import CodeIcon from '@mui/icons-material/Code';
 import api from "../../api.js";
 
-const SimpleTable = () => {
+const EnhancedTable = () => {
     const { id } = useParams();
     const [username, setUsername] = React.useState("");
     const [problem, setProblem] = React.useState({});
@@ -83,11 +83,11 @@ const SimpleTable = () => {
                                             <IconButton
                                                 onClick={() => handleOpen(row.code, row.result)}
                                                 sx={{
-                                                    backgroundColor: "#222831",
-                                                    color: "#DFD0B8",
-                                                    padding: '5px',
-                                                    borderRadius: '10px',
-                                                    '&:hover': { backgroundColor: "#393E46" },
+                                                    backgroundColor: "red",
+                                                    color: "white",
+                                                    padding: "5px",
+                                                    borderRadius: "10px",
+                                                    '&:hover': { backgroundColor: "darkred" },
                                                 }}
                                             >
                                                 <CodeIcon />
@@ -105,4 +105,4 @@ const SimpleTable = () => {
     );
 };
 
-export default SimpleTable;
+export default EnhancedTable;
