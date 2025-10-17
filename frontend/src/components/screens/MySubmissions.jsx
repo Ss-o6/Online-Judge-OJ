@@ -15,31 +15,34 @@ const SimpleTable = () => {
   const [currentCode, setCurrentCode] = React.useState("");
   const [currentResult, setCurrentResult] = React.useState("");
 
-  React.useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const token = localStorage.getItem("token");
-        if (!token) return;
+ React.useEffect(() => {
+  const fetchData = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      if (!token) return;
 
-        // Get logged-in user info
-        const userRes = await api.get("/me", { headers: { Authorization: `Bearer ${token}` } });
-        const userId = userRes.data.user.id; // logged-in user ID (string)
+      // Fetch logged-in user info
+      const userRes = await api.get("/me", { headers: { Authorization: `Bearer ${token}` } });
+      const userId = userRes.data.user.id;
 
-        // Fetch problem with all submissions
-        const res = await api.get(`/problem/${id}`, { headers: { Authorization: `Bearer ${token}` } });
-        setProblem(res.data.problem);
+      // Fetch problem with all submissions
+      const res = await api.get(`/problem/${id}`, { headers: { Authorization: `Bearer ${token}` } });
+      setProblem(res.data.problem);
 
-        // Filter submissions to only **logged-in user's submissions**
-        const mySubmissions = res.data.problem.submissions.filter(sub => sub.user === userId);
+      // Filter submissions to only those by the logged-in user
+      const userSubmissions = res.data.problem.submissions.filter(
+        (submission) => submission.user.toString() === userId.toString()
+      );
+      setRows(userSubmissions);
 
-        setRows(mySubmissions);
-      } catch (err) {
-        console.error(err);
-      }
-    };
+    } catch (err) {
+      console.error("Failed to fetch data:", err);
+    }
+  };
 
-    fetchData();
-  }, [id]);
+  fetchData();
+}, [id]);
+
 
   const handleOpen = (code, result) => {
     setCurrentCode(code);
