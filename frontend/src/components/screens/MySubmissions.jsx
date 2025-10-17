@@ -1,14 +1,14 @@
+
 import * as React from "react";
 import { Box, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, IconButton } from "@mui/material";
 import CodeIcon from "@mui/icons-material/Code";
 import { useParams, Link } from "react-router-dom";
-import api from "../../api.js";
 import Navbar from "../Navbar.jsx";
+import api from "../../api.js";
 import CodeModal from "../CodeModal.jsx";
 
 const SimpleTable = () => {
   const { id } = useParams();
-
   const [rows, setRows] = React.useState([]);
   const [problem, setProblem] = React.useState({});
   const [open, setOpen] = React.useState(false);
@@ -23,18 +23,14 @@ const SimpleTable = () => {
 
         // Get logged-in user info
         const userRes = await api.get("/me", { headers: { Authorization: `Bearer ${token}` } });
-        const userId = String(userRes.data.user.id); // Ensure string comparison
+        const userId = userRes.data.user.id; // logged-in user ID (string)
 
-        // Get problem with all submissions
+        // Fetch problem with all submissions
         const res = await api.get(`/problem/${id}`, { headers: { Authorization: `Bearer ${token}` } });
         setProblem(res.data.problem);
 
-        // Filter submissions to only the current user (robust)
-        const mySubmissions = res.data.problem.submissions.filter(sub => {
-          if (!sub.user) return false;
-          const subUserId = typeof sub.user === "string" ? sub.user : sub.user._id;
-          return String(subUserId) === userId;
-        });
+        // Filter submissions to only **logged-in user's submissions**
+        const mySubmissions = res.data.problem.submissions.filter(sub => sub.user === userId);
 
         setRows(mySubmissions);
       } catch (err) {
@@ -74,7 +70,7 @@ const SimpleTable = () => {
                 const bgColor = row.result === "Accepted" ? "#c3e6cb" : "#f5c6cb";
                 return (
                   <TableRow key={index} sx={{ backgroundColor: bgColor }}>
-                    <TableCell>{row.user?.username || row.user?._id || row.user}</TableCell>
+                    <TableCell>{row.user}</TableCell>
                     <TableCell>
                       <Link to={`/problem/${id}`} className="text-blue-500 hover:underline">
                         {problem.title}
