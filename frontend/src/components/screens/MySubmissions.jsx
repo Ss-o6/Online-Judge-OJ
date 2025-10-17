@@ -1,122 +1,108 @@
-
 import * as React from "react";
 import { Box, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, IconButton } from "@mui/material";
-import CodeIcon from "@mui/icons-material/Code";
-import { useParams, Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
+import CodeIcon from '@mui/icons-material/Code';
 import Navbar from "../Navbar.jsx";
-import api from "../../api.js";
 import CodeModal from "../CodeModal.jsx";
+import api from "../../api.js";
 
 const SimpleTable = () => {
-  const { id } = useParams();
-  const [rows, setRows] = React.useState([]);
-  const [problem, setProblem] = React.useState({});
-  const [open, setOpen] = React.useState(false);
-  const [currentCode, setCurrentCode] = React.useState("");
-  const [currentResult, setCurrentResult] = React.useState("");
+    const { id } = useParams();
+    const [username, setUsername] = React.useState("");
+    const [problem, setProblem] = React.useState({});
+    const [rows, setRows] = React.useState([]);
+    const [open, setOpen] = React.useState(false);
+    const [currentCode, setCurrentCode] = React.useState("");
+    const [currentResult, setCurrentResult] = React.useState("");
 
- React.useEffect(() => {
-  const fetchData = async () => {
-    try {
-      const token = localStorage.getItem("token");
-      if (!token) return;
+    const handleOpen = (code, result) => {
+        setCurrentCode(code);
+        setCurrentResult(result);
+        setOpen(true);
+    };
 
-      // Fetch logged-in user info
-      const userRes = await api.get("/me", { headers: { Authorization: `Bearer ${token}` } });
-      const userId = userRes.data.user.id;
+    const handleClose = () => {
+        setOpen(false);
+    };
 
-      // Fetch problem with all submissions
-      const res = await api.get(`/problem/${id}`, { headers: { Authorization: `Bearer ${token}` } });
-      setProblem(res.data.problem);
+    React.useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const token = localStorage.getItem("token");
+                if (!token) return;
 
-      // Filter only submissions by logged-in user
-      const userSubmissions = res.data.problem.submissions.filter((submission) => {
-        // If submission.user is an object with _id
-        if (submission.user && submission.user._id) {
-          return submission.user._id.toString() === userId.toString();
-        }
-        // If submission.user is just an ID
-        return submission.user.toString() === userId.toString();
-      });
+                const userRes = await api.get("/me", { headers: { Authorization: `Bearer ${token}` } });
+                setUsername(userRes.data.user.username);
 
-      setRows(userSubmissions);
+                const problemRes = await api.get(`/problem/${id}`, { headers: { Authorization: `Bearer ${token}` } });
+                setProblem(problemRes.data.problem);
 
-    } catch (err) {
-      console.error("Failed to fetch data:", err);
-    }
-  };
+                const submissions = problemRes.data.problem.submissions || [];
+                const mySubmissions = submissions.filter(sub => sub.user === userRes.data.user.username);
 
-  fetchData();
-}, [id]);
+                setRows(mySubmissions);
+            } catch (error) {
+                console.error("Failed to fetch data:", error);
+            }
+        };
 
+        fetchData();
+    }, [id]);
 
-  const handleOpen = (code, result) => {
-    setCurrentCode(code);
-    setCurrentResult(result);
-    setOpen(true);
-  };
-
-  const handleClose = () => setOpen(false);
-
-  return (
-    <div>
-      <Navbar />
-      <Box sx={{ width: "100%", height: "100vh", p: 2, backgroundColor: "#f0f4f8" }}>
-        <TableContainer component={Paper} sx={{ maxHeight: "80vh" }}>
-          <Table stickyHeader>
-            <TableHead>
-              <TableRow>
-                <TableCell>User</TableCell>
-                <TableCell>Problem</TableCell>
-                <TableCell>Result</TableCell>
-                <TableCell>Language</TableCell>
-                <TableCell>Submission Date</TableCell>
-                <TableCell>Code</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {rows.map((row, index) => {
-                const bgColor = row.result === "Accepted" ? "#c3e6cb" : "#f5c6cb";
-                return (
-                  <TableRow key={index} sx={{ backgroundColor: bgColor }}>
-                   <TableCell>
-  {row.user
-    ? row.user.name || row.user.username || row.user
-    : "Unknown User"}
-</TableCell>
-
-                    <TableCell>
-                      <Link to={`/problem/${id}`} className="text-blue-500 hover:underline">
-                        {problem.title}
-                      </Link>
-                    </TableCell>
-                    <TableCell>{row.result}</TableCell>
-                    <TableCell>{row.language}</TableCell>
-                    <TableCell>{new Date(row.submissionDate).toLocaleString()}</TableCell>
-                    <TableCell>
-                      <IconButton
-                        onClick={() => handleOpen(row.code, row.result)}
-                        sx={{
-                          backgroundColor: 'red',
-                          color: 'white',
-                          padding: '5px',
-                          borderRadius: '10px',
-                          '&:hover': { backgroundColor: 'darkred' },
-                        }}
-                      >
-                        <CodeIcon />
-                      </IconButton>
-                    </TableCell>
-                  </TableRow>
-                );
-              })}
-            </TableBody>
-          </Table>
-        </TableContainer>
-      </Box>
-      <CodeModal open={open} handleClose={handleClose} code={currentCode} result={currentResult} />
-    </div>
-  );
+    return (
+        <div>
+            <Navbar />
+            <Box sx={{ width: "100%", height: "100vh", p: 2, backgroundColor: "#f0f4f8" }}>
+                <TableContainer component={Paper} sx={{ maxHeight: "80vh" }}>
+                    <Table stickyHeader>
+                        <TableHead sx={{ backgroundColor: "#DFD0B8" }}>
+                            <TableRow>
+                                <TableCell>User</TableCell>
+                                <TableCell>Problem</TableCell>
+                                <TableCell>Result</TableCell>
+                                <TableCell>Language</TableCell>
+                                <TableCell>Submission Date</TableCell>
+                                <TableCell>Code</TableCell>
+                            </TableRow>
+                        </TableHead>
+                        <TableBody>
+                            {rows.map((row, index) => {
+                                const bgColor = row.result === "Accepted" ? "#c3e6cb" : "#f5c6cb";
+                                return (
+                                    <TableRow key={index} sx={{ backgroundColor: bgColor }}>
+                                        <TableCell>{row.user}</TableCell>
+                                        <TableCell>
+                                            <Link to={`/problem/${id}`} style={{ color: "#393E46", textDecoration: "underline" }}>
+                                                {problem.title}
+                                            </Link>
+                                        </TableCell>
+                                        <TableCell>{row.result}</TableCell>
+                                        <TableCell>{row.language}</TableCell>
+                                        <TableCell>{new Date(row.submissionDate).toLocaleString()}</TableCell>
+                                        <TableCell>
+                                            <IconButton
+                                                onClick={() => handleOpen(row.code, row.result)}
+                                                sx={{
+                                                    backgroundColor: "#222831",
+                                                    color: "#DFD0B8",
+                                                    padding: '5px',
+                                                    borderRadius: '10px',
+                                                    '&:hover': { backgroundColor: "#393E46" },
+                                                }}
+                                            >
+                                                <CodeIcon />
+                                            </IconButton>
+                                        </TableCell>
+                                    </TableRow>
+                                );
+                            })}
+                        </TableBody>
+                    </Table>
+                </TableContainer>
+            </Box>
+            <CodeModal open={open} handleClose={handleClose} code={currentCode} result={currentResult} />
+        </div>
+    );
 };
 
 export default SimpleTable;
